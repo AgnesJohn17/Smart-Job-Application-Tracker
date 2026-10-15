@@ -25,7 +25,7 @@ test('registration, create, search, edit, reload and user isolation', async ({ p
   await page.getByTitle('Edit').click();
   await page.getByRole('dialog').getByText('Status').locator('select').selectOption('Interview');
   await page.getByRole('button', { name: 'Save application' }).click();
-  await expect(page.getByText('Interview', { exact: true }).first()).toBeVisible();
+  await expect(page.locator('tbody .pill')).toHaveText('Interview');
   await page.reload();
   await expect(page.getByText('Northstar Software')).toBeVisible();
   await page.getByRole('button', { name: 'Sign out' }).click();
