@@ -33,6 +33,7 @@ class Application(Base):
     status: Mapped[str] = mapped_column(String(20), default="Wishlist", nullable=False)
     applied_date: Mapped[date | None] = mapped_column(Date, nullable=True)
     deadline: Mapped[date | None] = mapped_column(Date, nullable=True)
+    interview_date: Mapped[date | None] = mapped_column(Date, nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
     owner: Mapped[User] = relationship(back_populates="applications")
