@@ -13,6 +13,10 @@ An end-to-end software engineering portfolio project built with **React, TypeScr
 - Local Docker Compose stack (PostgreSQL + FastAPI + Vite/React)
 - Unit/integration testing and automated CI checks
 
+## Deploy online
+
+See [production MVP deployment steps](docs/deployment.md) for hosted PostgreSQL, Render backend, Vercel frontend and secrets setup. **No public app URL has been verified yet.**
+
 ## Start with Docker
 ```sh
 cp .env.example .env
@@ -50,8 +54,8 @@ cd ../frontend && npm install && npm run build
 Passwords are salted and stretched with PBKDF2-HMAC-SHA256; API tokens are signed with an environment-configured secret and expire. Each application query is restricted to its authenticated owner. Never commit the .env file. This demo does **not** replace production-ready practices such as HTTPS, refresh-token rotation, rate limiting, CSRF-safe HttpOnly cookie sessions, and database migrations.
 
 ## Roadmap
-- [ ] MVP backend, frontend and CI verified
-- [ ] Browser end-to-end tests
+- [x] MVP backend, frontend and CI verified
+- [x] Browser end-to-end tests with PostgreSQL and Playwright
 - [ ] Production deployment with managed PostgreSQL
 - [ ] Automated email reminders, advanced interview calendar and analytics
 
