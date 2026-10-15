@@ -8,7 +8,7 @@ An end-to-end software engineering portfolio project built with **React, TypeScr
 - Account registration and bearer-token login
 - Private, per-user job application records
 - Create/edit/delete applications; track Wishlist, Applied, Interview, Offer and Rejected stages
-- Company/role search, status filtering, deadlines, notes and links
+- Company/role search, status filtering, application deadlines, interview dates, notes and links
 - Dashboard totals
 - Local Docker Compose stack (PostgreSQL + FastAPI + Vite/React)
 - Unit/integration testing and automated CI checks
@@ -42,8 +42,8 @@ Default frontend expects API at `http://localhost:8000`.
 
 ## Tests
 ```sh
-cd backend && pytest -q
-cd ../frontend && npm ci && npm run build
+cd backend && python -m pytest -q
+cd ../frontend && npm install && npm run build
 ```
 
 ## Security notes
@@ -56,3 +56,18 @@ Passwords are salted and stretched with PBKDF2-HMAC-SHA256; API tokens are signe
 - [ ] Automated email reminders, advanced interview calendar and analytics
 
 Created as a practical, testable full-stack project for software development internship applications.
+
+## Browser end-to-end integration tests
+
+The [browser integration workflow](.github/workflows/browser-e2e.yml) starts PostgreSQL 16, launches the FastAPI service and React development server, and runs Playwright Chromium tests. Its test journey covers registration, creating an application with deadline and interview date, searching, editing status, page reload persistence, sign-out and separation of records between accounts.
+
+The workflow must pass before browser integration is considered verified; a successful frontend build alone is not proof of browser functionality. To run locally after starting the backend, frontend and PostgreSQL:
+
+```sh
+cd frontend
+npm install
+npx playwright install chromium
+npm run test:e2e
+```
+
+For local schema changes made after initializing an existing database, recreate the development database or use migrations; the MVP uses `create_all` and does not automatically alter existing tables.
