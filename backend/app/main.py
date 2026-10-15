@@ -76,9 +76,17 @@ def list_applications(
     return db.scalars(query.order_by(Application.created_at.desc(), Application.id.desc())).all()
 
 
+def to_database_fields(body, *, partial=False):
+    """Keep Python date objects for SQLAlchemy and serialize validated HTTP URLs."""
+    data = body.model_dump(exclude_unset=partial, mode="python")
+    if "url" in data and data["url"] is not None:
+        data["url"] = str(data["url"])
+    return data
+
+
 @app.post("/api/applications", response_model=ApplicationOut, status_code=status.HTTP_201_CREATED)
 def add_application(body: ApplicationInput, db: Session = Depends(get_db), user: User = Depends(current_user)):
-    data = body.model_dump(mode="json")
+    data = to_database_fields(body)
     record = Application(owner_id=user.id, **data)
     db.add(record)
     db.commit()
@@ -96,7 +104,7 @@ def owned_application(app_id: int, db: Session, user: User):
 @app.patch("/api/applications/{app_id}", response_model=ApplicationOut)
 def edit_application(app_id: int, body: ApplicationPatch, db: Session = Depends(get_db), user: User = Depends(current_user)):
     record = owned_application(app_id, db, user)
-    changes = body.model_dump(exclude_unset=True, mode="json")
+    changes = to_database_fields(body, partial=True)
     for field, value in changes.items():
         if field in ("company", "role", "status") and value is None:
             raise HTTPException(422, f"{field} cannot be null")
