@@ -4,7 +4,7 @@
 
 An end-to-end software engineering portfolio project built with **React, TypeScript, FastAPI, SQLAlchemy, PostgreSQL and Docker**.
 
-> **Status: Deployed MVP (final public end-to-end verification pending).** Vercel frontend and Render backend were deployed by the project owner; the backend health endpoint returned `{"status":"ok"}` in the owner's screenshot. The full browser integration suite against a CI PostgreSQL database passed. Production CORS configuration and signup/application workflow still need to be manually confirmed after deployment.
+> **Status: Deployed MVP, with Neon migration completed (final post-migration browser check pending).** Frontend is hosted on Vercel, FastAPI runs on Render, and PostgreSQL runs on Neon. The Render redeploy using the new Neon `DATABASE_URL` reached **Live**; the migrated Neon database was verified to contain 1 user and 1 application, matching the original. Automated backend, frontend build, and PostgreSQL-backed browser integration tests have passed.
 
 ## Features (MVP)
 - Account registration and bearer-token login
@@ -21,7 +21,7 @@ An end-to-end software engineering portfolio project built with **React, TypeScr
 
 **Backend:** [https://smart-job-application-tracker-10eb.onrender.com/docs](https://smart-job-application-tracker-10eb.onrender.com/docs)
 
-Deployment links were supplied by the project owner. Ensure the Render backend environment variable `CORS_ORIGINS` is set to `https://smart-job-application-tracker-woad.vercel.app` and deploy the updated configuration before trying registration. See [production MVP deployment steps](docs/deployment.md) for detailed setup. The free Render PostgreSQL database is temporary and, per the project owner's dashboard, expires on **November 13, 2026** without upgrading; don't rely on it for permanent data.
+**Live stack:** Vercel React frontend → Render FastAPI API → **Neon PostgreSQL** (`trackwise-db` project, `jobtracker` database). The Render `DATABASE_URL` was switched to Neon and the deploy was confirmed Live. The original Render `job-tracker-db` was preserved as a temporary fallback; it is no longer the intended live data store and is subject to its free-plan expiry around **November 13–14, 2026**. Do not write new production data to the old database or assume it stays synchronized. Set `CORS_ORIGINS` to the exact Vercel origin. See [production MVP deployment steps](docs/deployment.md) for detailed setup. Neon Free has its own usage and storage limits, but is not subject to Render's 30-day free Postgres expiration.
 
 ## Start with Docker
 ```sh
@@ -62,10 +62,14 @@ Passwords are salted and stretched with PBKDF2-HMAC-SHA256; API tokens are signe
 ## Roadmap
 - [x] MVP backend, frontend and CI verified
 - [x] Browser end-to-end tests with PostgreSQL and Playwright
-- [x] Deploy frontend and backend and provision managed PostgreSQL (public user-flow verification still pending)
+- [x] Deploy Vercel frontend and Render backend
+- [x] Migrate PostgreSQL from expiring Render Free instance to Neon and verify copied records
+- [ ] Complete manual post-migration browser test (login and create/refresh an application)
 - [ ] Automated email reminders, advanced interview calendar and analytics
 
 Created as a practical, testable full-stack project for software development internship applications. **Use test data only** until production security and privacy hardening is completed.
+
+**Resume-ready description:** Built and deployed Trackwise, a full-stack job application tracker using React, TypeScript, FastAPI, SQLAlchemy and PostgreSQL. Implemented JWT authentication, private per-user application management, search, filters, interview dates and dashboard metrics, backed by CI and Playwright end-to-end tests. Hosted with Vercel, Render and Neon.
 
 ## Browser end-to-end integration tests
 
