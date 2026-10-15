@@ -21,6 +21,7 @@ def test_application_with_dates_and_url():
             "status": "Applied",
             "applied_date": "2026-10-14",
             "deadline": "2027-01-20",
+            "interview_date": "2027-02-05",
             "url": "https://example.com/careers",
             "location": "Toronto",
             "notes": "Follow up after applying"
@@ -29,12 +30,14 @@ def test_application_with_dates_and_url():
         record = create.json()
         assert record["applied_date"] == "2026-10-14"
         assert record["deadline"] == "2027-01-20"
+        assert record["interview_date"] == "2027-02-05"
         assert record["url"] == "https://example.com/careers"
         update = client.patch(f"/api/applications/{record['id']}", headers=auth,
                               json={"status": "Interview", "deadline": "2027-02-01",
-                                    "applied_date": None, "url": None})
+                                    "applied_date": None, "url": None, "interview_date": "2027-02-08"})
         assert update.status_code == 200, update.text
         assert update.json()["deadline"] == "2027-02-01"
+        assert update.json()["interview_date"] == "2027-02-08"
         assert update.json()["applied_date"] is None
         assert update.json()["url"] is None
         assert len(client.get("/api/applications", headers=auth,
