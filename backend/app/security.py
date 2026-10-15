@@ -15,8 +15,8 @@ from .database import get_db
 from .models import User
 
 SECRET_KEY = os.getenv("SECRET_KEY", "development-only-insecure-secret")
-if os.getenv("APP_ENV") == "production" and SECRET_KEY == "development-only-insecure-secret":
-    raise RuntimeError("SECRET_KEY must be set for production")
+if os.getenv("APP_ENV") == "production" and (not os.getenv("SECRET_KEY") or len(SECRET_KEY) < 32 or SECRET_KEY == "development-only-insecure-secret"):
+    raise RuntimeError("Set a strong SECRET_KEY of at least 32 characters for production")
 ALGORITHM = "HS256"
 HASH_ITERATIONS = 600_000
 bearer = HTTPBearer(auto_error=False)
