@@ -29,6 +29,7 @@ class ApplicationInput(BaseModel):
     status: Status = "Wishlist"
     applied_date: date | None = None
     deadline: date | None = None
+    interview_date: date | None = None
     notes: str | None = Field(default=None, max_length=2000)
 
     @field_validator("company", "role")
@@ -47,6 +48,7 @@ class ApplicationPatch(BaseModel):
     status: Status | None = None
     applied_date: date | None = None
     deadline: date | None = None
+    interview_date: date | None = None
     notes: str | None = Field(default=None, max_length=2000)
 
     @field_validator("company", "role")
