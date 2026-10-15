@@ -1,0 +1,62 @@
+name: Browser integration E2E
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - '.github/workflows/browser-e2e.yml'
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: tracker
+          POSTGRES_PASSWORD: ci-only-password
+          POSTGRES_DB: jobtracker
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U tracker -d jobtracker"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: pip install -r backend/requirements.txt
+      - run: npm install --prefix frontend --no-audit --no-fund
+      - run: cd frontend && npx playwright install --with-deps chromium
+      - name: Start FastAPI with PostgreSQL
+        env:
+          DATABASE_URL: postgresql+psycopg://tracker:ci-only-password@localhost:5432/jobtracker
+          SECRET_KEY: testing-secret-only-not-for-production
+          CORS_ORIGINS: http://127.0.0.1:5173,http://localhost:5173
+        run: |
+          cd backend
+          nohup uvicorn app.main:app --host 127.0.0.1 --port 8000 > /tmp/tracker-backend.log 2>&1 &
+          for i in $(seq 1 40); do curl --fail -s http://127.0.0.1:8000/api/health && break || sleep 1; done
+      - name: Start React frontend
+        env:
+          VITE_API_URL: http://127.0.0.1:8000
+        run: |
+          cd frontend
+          nohup npm run dev -- --host 127.0.0.1 > /tmp/tracker-frontend.log 2>&1 &
+          for i in $(seq 1 40); do curl --fail -s http://127.0.0.1:5173 && break || sleep 1; done
+      - name: Browser journey
+        run: cd frontend && npx playwright test
+      - name: Collect logs on failure
+        if: failure()
+        run: |
+          cat /tmp/tracker-backend.log || true
+          cat /tmp/tracker-frontend.log || true
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-failures
+          path: frontend/test-results/
+          retention-days: 7
