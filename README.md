@@ -1,8 +1,10 @@
 # Smart Job Application Tracker
 
+**[🚀 Open the Live Trackwise App](https://smart-job-application-tracker-woad.vercel.app/)** · [FastAPI Docs](https://smart-job-application-tracker-10eb.onrender.com/docs) · [CI Checks](https://github.com/AgnesJohn17/Smart-Job-Application-Tracker/actions)
+
 An end-to-end software engineering portfolio project built with **React, TypeScript, FastAPI, SQLAlchemy, PostgreSQL and Docker**.
 
-> **Status: MVP under development.** Authentication, application CRUD, search/filtering, dashboard statistics, automated tests and container setup are the initial milestones. Don't present future roadmap items as completed work.
+> **Status: Deployed MVP (final public end-to-end verification pending).** Vercel frontend and Render backend were deployed by the project owner; the backend health endpoint returned `{"status":"ok"}` in the owner's screenshot. The full browser integration suite against a CI PostgreSQL database passed. Production CORS configuration and signup/application workflow still need to be manually confirmed after deployment.
 
 ## Features (MVP)
 - Account registration and bearer-token login
@@ -15,7 +17,11 @@ An end-to-end software engineering portfolio project built with **React, TypeScr
 
 ## Deploy online
 
-See [production MVP deployment steps](docs/deployment.md) for hosted PostgreSQL, Render backend, Vercel frontend and secrets setup. **No public app URL has been verified yet.**
+**Frontend:** [https://smart-job-application-tracker-woad.vercel.app/](https://smart-job-application-tracker-woad.vercel.app/)
+
+**Backend:** [https://smart-job-application-tracker-10eb.onrender.com/docs](https://smart-job-application-tracker-10eb.onrender.com/docs)
+
+Deployment links were supplied by the project owner. Ensure the Render backend environment variable `CORS_ORIGINS` is set to `https://smart-job-application-tracker-woad.vercel.app` and deploy the updated configuration before trying registration. See [production MVP deployment steps](docs/deployment.md) for detailed setup. The free Render PostgreSQL database is temporary and, per the project owner's dashboard, expires on **November 13, 2026** without upgrading; don't rely on it for permanent data.
 
 ## Start with Docker
 ```sh
@@ -56,10 +62,10 @@ Passwords are salted and stretched with PBKDF2-HMAC-SHA256; API tokens are signe
 ## Roadmap
 - [x] MVP backend, frontend and CI verified
 - [x] Browser end-to-end tests with PostgreSQL and Playwright
-- [ ] Production deployment with managed PostgreSQL
+- [x] Deploy frontend and backend and provision managed PostgreSQL (public user-flow verification still pending)
 - [ ] Automated email reminders, advanced interview calendar and analytics
 
-Created as a practical, testable full-stack project for software development internship applications.
+Created as a practical, testable full-stack project for software development internship applications. **Use test data only** until production security and privacy hardening is completed.
 
 ## Browser end-to-end integration tests
 
